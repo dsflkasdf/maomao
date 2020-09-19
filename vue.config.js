@@ -1,0 +1,10 @@
+module.exports={
+	devServer:{
+		proxy:{
+			'api':{
+				target:'https://api.apiopen.top/todayVideo',
+				changeOrigin:'true'
+			}
+		}
+	}
+}

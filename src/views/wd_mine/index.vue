@@ -28,5 +28,6 @@
 	}
 </script>
 
-<style>
+<style scoped>
+#content{margin-top: 51px;}
 </style>

@@ -3,28 +3,19 @@
 		<div class="search_input">
 			<div class="search_input_wrapper">
 				<i class="iconfont icon-sousuo"></i>
-				<input type="text" />
+				<input type="text" v-model="zhi" />
 			</div>
 		</div>
 		<div class="search_result">
 			<h1>电影/电视剧/综艺</h1>
 			<ul>
-				<li>
-					<div class="img"><img src="/1.jpg" /></div>
+				<li v-for="(item,i) in ss" :key="i">
+					<div class="img"><img :src="item.img" /></div>
 					<div class="info">
-						<p><span>无名之辈</span><span>8.5</span></p>
-						<p>A Cool Fish</p>
-						<p>剧情，喜剧，犯罪</p>
-						<p>2018-11-16</p>
-					</div>
-				</li>
-				<li>
-					<div class="img"><img src="/1.jpg" /></div>
-					<div class="info">
-						<p><span>无名之辈</span><span>8.5</span></p>
-						<p>A Cool Fish</p>
-						<p>剧情，喜剧，犯罪</p>
-						<p>2018-11-16</p>
+						<p><span>{{item.biaoti}}</span><span>{{item.pj}}</span></p>
+						<p>{{item.ybt}}</p>
+						<p>{{item.lx}}</p>
+						<p>{{item.sj}}</p>
 					</div>
 				</li>
 			</ul>
@@ -34,12 +25,62 @@
 
 <script>
 export default{
-	name:'Search'
+	name:'Search',
+	data(){
+		return{
+			zhi:'',
+			list:[],
+			ss:[]
+		}
+	},
+	mounted() {
+		const that=this;
+		that.axios({
+			url:'/data/dydata.json',
+			method: 'get',
+			data:{},
+			responseType: 'blob',
+			transformResponse: [function(data) {
+				var reader = new FileReader()
+				reader.readAsText(data, 'GBK')
+				reader.onload = function(e) {
+					var music = JSON.parse(reader.result)
+					that.list = music.data;
+					// console.log(that.list)
+					
+				}
+			}],
+			headers: {
+			  'X-Requested-With': 'XMLHttpRequest',
+			  'Content-Type': 'application/x-www-form-urlencoded'
+			}
+		})
+	},
+	watch:{
+		zhi(newvalue,oldvalue){
+			for(var i=0;i<this.list.length;i++){
+				var p1=this.list[i].xbt.includes(this.zhi);
+				var p2=this.list[i].leixing.includes(this.zhi);
+				if(p1 || p2){
+					var x1=this.list[i].xbt.indexOf('/');
+					var x2=this.list[i].xbt.indexOf('/',x1+1);
+					var f1=this.list[i].leixing.indexOf('/',this.list[i].leixing.indexOf('/')+1);
+					this.list[i].lx=this.list[i].leixing.substr(f1+1);
+					this.list[i].sj=this.list[i].leixing.substring(0,f1);
+					this.list[i].ybt=this.list[i].xbt.substring(x1+1,x2);
+					this.ss.push(this.list[i]);
+					console.log(this.list[i].sj)
+				}
+				
+			}
+			
+		}
+	}
 }
 </script>
 
-<style>
-#content .search_body{flex: 1;overflow: auto;}
+<style scoped >
+#content .search_body{flex: 1;overflow: auto;margin-top: 97px;}
 .search_body .search_input{padding: 8px 10px;background-color: #F5F5F5;border-bottom: 1px solid #e5e5e5;}
 .search_body .search_input_wrapper{padding: 0 0 0 10px;border: 1px solid #E6E6E6;border-radius: #fff;display: flex;background: #fff;}
 .search_body .search_input_wrapper i{font-size: 16px;padding: 4px 0;}
