@@ -46,8 +46,8 @@
 </script>
 
 <style scoped>
-#content{flex: 1;overflow: auto;margin-bottom: 50px;position: relative;display: flex;flex-direction: column;}
-#content .movie_menu{width: 100%;height: 45px;border-bottom: 1px solid #e6e6e6;display: flex;justify-content: space-between;}
+#content{flex: 1;overflow: auto;margin-bottom: 50px;display: flex;flex-direction: column;}
+#content .movie_menu{width: 100%;height: 45px;border-bottom: 1px solid #e6e6e6;display: flex;justify-content: space-between;background: #fff;position: fixed;top: 51px;z-index: 2;}
 .movie_menu .city_name{margin-left: 20px;height: 100%;line-height: 45px;}
 .movie_menu .city_name.router-link-active{color: #ef4238;border-bottom: 2px solid #ef4238;box-sizing: border-box;}
 .movie_menu .hot_swtich{display: flex;height: 100%;line-height: 45px;}
