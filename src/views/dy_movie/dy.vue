@@ -5,7 +5,7 @@
 			<div class="movie_menu">
 				
 				<router-link tag='div' to='/movie/city' class="city_name">
-					<span>大连</span>
+					<span>{{ $store.state.Cain.nm }}</span>
 					<i class="iconfont icon-xiala2"></i>
 				</router-link>
 				
@@ -24,18 +24,39 @@
 			</keep-alive>
 		</div>
 		<TabBar></TabBar>
+		<router-view name="diear"/>
 	</div>
 </template>
 
 <script>
 	import Header from '@/components/Header';
 	import TabBar from '@/components/TabBar';
-	
+	import { Tankuang } from '@/components/js';
 	export default{
 		name:'dy_movie',
 		components:{
 			Header,
-			TabBar
+			TabBar,
+		},
+		mounted(){
+			var nm='长沙';
+			var id=1;
+			var name=window.localStorage.nm;
+			if(nm!==name){
+				setInterval(()=>{
+					Tankuang({
+						title:'当前位置',
+						content:nm,
+						cancel:'取消',
+						ok:'确定',
+						handleOk(){
+							window.localStorage.setItem('nm',nm);
+							window.localStorage.setItem('id',id);
+							window.location.href=window.location.href;
+						}
+					})
+				},3000)
+			}
 		},
 		data(){
 			return{
@@ -46,7 +67,8 @@
 </script>
 
 <style scoped>
-#content{flex: 1;overflow: auto;margin-bottom: 50px;display: flex;flex-direction: column;}
+#mian{width: 320px;height: 568px;}
+#content{overflow: auto;display: flex;flex-direction: column;position: fixed;top: 51px;width: 100%;height: 465px;}
 #content .movie_menu{width: 100%;height: 45px;border-bottom: 1px solid #e6e6e6;display: flex;justify-content: space-between;background: #fff;position: fixed;top: 51px;z-index: 2;}
 .movie_menu .city_name{margin-left: 20px;height: 100%;line-height: 45px;}
 .movie_menu .city_name.router-link-active{color: #ef4238;border-bottom: 2px solid #ef4238;box-sizing: border-box;}

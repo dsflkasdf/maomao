@@ -1,25 +1,29 @@
 <template>
 	<div class="search_body">
-		<div class="search_input">
-			<div class="search_input_wrapper">
-				<i class="iconfont icon-sousuo"></i>
-				<input type="text" v-model="zhi" />
-			</div>
-		</div>
-		<div class="search_result">
-			<h1>电影/电视剧/综艺</h1>
-			<ul>
-				<li v-for="(item,i) in ss" :key="i">
-					<div class="img"><img :src="item.img" /></div>
-					<div class="info">
-						<p><span>{{item.biaoti}}</span><span>{{item.pj}}</span></p>
-						<p>{{item.ybt}}</p>
-						<p>{{item.lx}}</p>
-						<p>{{item.sj}}</p>
+		<Scroll>
+			<div>
+				<div class="search_input">
+					<div class="search_input_wrapper">
+						<i class="iconfont icon-sousuo"></i>
+						<input type="text" v-model="zhi" />
 					</div>
-				</li>
-			</ul>
-		</div>
+				</div>
+				<div class="search_result">
+					<h1>电影/电视剧/综艺</h1>
+					<ul>
+						<li v-for="(item,i) in ss" :key="i">
+							<div class="img"><img :src="item.img" /></div>
+							<div class="info">
+								<p><span>{{item.biaoti}}</span><span>{{item.pj}}</span></p>
+								<p>{{item.ybt}}</p>
+								<p>{{item.lx}}</p>
+								<p>{{item.sj}}</p>
+							</div>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</Scroll>
 	</div>
 </template>
 
@@ -58,20 +62,24 @@ export default{
 	},
 	watch:{
 		zhi(newvalue,oldvalue){
-			for(var i=0;i<this.list.length;i++){
-				var p1=this.list[i].xbt.includes(this.zhi);
-				var p2=this.list[i].leixing.includes(this.zhi);
-				if(p1 || p2){
-					var x1=this.list[i].xbt.indexOf('/');
-					var x2=this.list[i].xbt.indexOf('/',x1+1);
-					var f1=this.list[i].leixing.indexOf('/',this.list[i].leixing.indexOf('/')+1);
-					this.list[i].lx=this.list[i].leixing.substr(f1+1);
-					this.list[i].sj=this.list[i].leixing.substring(0,f1);
-					this.list[i].ybt=this.list[i].xbt.substring(x1+1,x2);
-					this.ss.push(this.list[i]);
-					console.log(this.list[i].sj)
+			if(this.zhi!==''){
+				for(var i=0;i<this.list.length;i++){
+					var p1=this.list[i].xbt.includes(this.zhi);
+					var p2=this.list[i].leixing.includes(this.zhi);
+					if(p1 || p2){
+						var x1=this.list[i].xbt.indexOf('/');
+						var x2=this.list[i].xbt.indexOf('/',x1+1);
+						var f1=this.list[i].leixing.indexOf('/',this.list[i].leixing.indexOf('/')+1);
+						this.list[i].lx=this.list[i].leixing.substr(f1+1);
+						this.list[i].sj=this.list[i].leixing.substring(0,f1);
+						this.list[i].ybt=this.list[i].xbt.substring(x1+1,x2);
+						this.ss.push(this.list[i]);
+						console.log(this.list[i].sj)
+					}
+					
 				}
-				
+			}else{
+				this.ss=[];
 			}
 			
 		}
@@ -80,7 +88,7 @@ export default{
 </script>
 
 <style scoped >
-#content .search_body{flex: 1;overflow: auto;margin-top: 97px;}
+#content .search_body{overflow: auto;position: fixed;top: 97px;width: 100%;height: 416px;}
 .search_body .search_input{padding: 8px 10px;background-color: #F5F5F5;border-bottom: 1px solid #e5e5e5;}
 .search_body .search_input_wrapper{padding: 0 0 0 10px;border: 1px solid #E6E6E6;border-radius: #fff;display: flex;background: #fff;}
 .search_body .search_input_wrapper i{font-size: 16px;padding: 4px 0;}

@@ -10,6 +10,12 @@ Vue.prototype.axios=axios;
 Vue.prototype.ajax=ajax;
 Vue.config.productionTip = false
 
+import Scroll from '@/components/Scroll'
+Vue.component('Scroll',Scroll);
+
+import Loading from '@/components/Loading'
+Vue.component('Loading',Loading);
+
 new Vue({
   router,
   store,

@@ -19,6 +19,26 @@ export default {
 			component:()=>import('@/components/Search')
 		},
 		{
+			path:'diear/1/:id',
+			components:{
+				default:()=>import('@/components/NowPlaying'),
+				diear : ()=>import('@/views/dy_movie/xqy'),
+			},
+			props:{
+				diear:true
+			}
+		},
+		{
+			path:'diear/2/:id',
+			components:{
+				default:()=>import('@/components/ComingSoon'),
+				diear : ()=>import('@/views/dy_movie/xqy'),
+			},
+			props:{
+				diear:true
+			}
+		},
+		{
 			path:'/movie',
 			redirect:'/movie/nowplaying'
 		}

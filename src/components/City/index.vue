@@ -1,24 +1,29 @@
 <template>
 	<div class="city_body">
 		<div class="city_list">
-			<div class="city_hot">
-				<h2>热门城市</h2>
-				<ul class="clearfix">
-					<li v-for="item in rm" :key="item.pid">{{item.city}}</li>
-				</ul>
-			</div>
-			<div class="city_sort" ref='city_sort'>
-				<div v-for="(item,i) in fl" :key="i">
-					<h2>{{item.index}}</h2>
-					<ul>
-						<li v-for="(items,i) in item.list" :key="items.id">{{items.nm}}</li>
-					</ul>
+			<Loading v-if='isload'></Loading>
+			<Scroll v-else ref="city_list">
+				<div>
+					<div class="city_hot">
+						<h2>热门城市</h2>
+						<ul class="clearfix">
+							<li v-for="item in rm" :key="item.pid" @touchstart="xgaiCity(item.city,item.pid)">{{item.city}}</li>
+						</ul>
+					</div>
+					<div class="city_sort" ref='city_sort'>
+						<div v-for="(item,i) in fl" :key="i">
+							<h2>{{item.index}}</h2>
+							<ul>
+								<li v-for="(items,i) in item.list" :key="items.id" @touchstart="xgaiCity(items.nm,items.id)">{{items.nm}}</li>
+							</ul>
+						</div>
+					</div>
 				</div>
-			</div>
+			</Scroll>
 		</div>
 		<div class="city_index">
 			<ul>
-				<li v-for="(item,i) in fl" :key="i" @touchstart='md(i)'>{{item.index}}</li>
+				<li v-for="(item,i) in fl" :key="i" @touchstart='dji(i)'>{{item.index}}</li>
 			</ul>
 		</div>
 	</div>
@@ -30,25 +35,32 @@
 		data(){
 			return{
 				fl:[],
-				rm:[]
+				rm:[],
+				isload:true
 			}
 		},
 		mounted(){
-			this.axios.get('/data/data.json')
-			.then((res)=>{
-				var obj=this.bz(res);
-				this.fl=obj.fleiList;
-				this.rm=obj.rmencs;
-				// console.log(this.fl,this.rm)
-			})
+			var fl=window.localStorage.getItem('fleiList');
+			var rm=window.localStorage.getItem('rmencs');
+			if(fl && rm){
+				this.fl=JSON.parse(fl);
+				this.rm=JSON.parse(rm);
+				this.isload=false;
+			}else{
+				this.axios.get('/data/data.json')
+				.then((res)=>{
+					if(res.status===200){
+						var obj=this.bz(res);
+						window.localStorage.setItem('fleiList',JSON.stringify(obj.fleiList));
+						window.localStorage.setItem('rmencs',JSON.stringify(obj.rmencs));
+						this.fl=obj.fleiList;
+						this.rm=obj.rmencs;
+						this.isload=false;
+					}
+				})
+			}
 		},
 		methods:{
-			md(index){
-				var h2=this.$refs.city_sort.getElementsByTagName('h2');
-				var j=h2[index].offsetTop;
-				document.documentElement.scrollTop = h2[index].offsetTop-97;
-				// console.log(document.documentElement.scrollTop,j)
-			},
 			bz(res){
 				var fleiList=[];
 				var rmencs=[];
@@ -60,7 +72,6 @@
 						var zf=data[i].en.substr(0,1).toUpperCase();
 						var sz={'nm':data[i].city,'id':parseInt(data[i].pid)};
 						obj={'index':zf,'list':[sz],'pid':this.piy(zf)};
-						
 						if(this.nflei(fleiList,zf)){
 							for(var j=0;j<fleiList.length;j++){
 								if(fleiList[j].index===zf){
@@ -189,19 +200,33 @@
 					}
 				}
 				return zc;
+			},
+			dji(y){
+				var h2=this.$refs.city_sort.getElementsByTagName('h2');
+				var j=h2[y].offsetTop;
+				if(j>1806){
+					j=1806;
+				}
+				this.$refs.city_list.xl(-j);
+			},
+			xgaiCity(nm,id){
+				this.$store.commit('Cain/CITY_INFO',{nm,id});
+				window.localStorage.setItem('nm',nm);
+				window.localStorage.setItem('id',id);
+				this.$router.push('/movie/nowplaying')
 			}
 		}
 	}
 </script>
 
 <style scoped>
-#content .city_body{margin-top: 97px;display: flex;width: 100%;}
+#content .city_body{position: fixed;top: 97px;display: flex;width: 100%;height: 416px;}
 .city_body .city_list{flex: 1;overflow: auto;background: #fff5f0;}
 .city_body .city_list::-webkit-scrollbar{background-color: transparent;width: 0;}
 .city_body .city_hot{margin-top: 0px;margin-bottom: 20px;overflow: hidden;}
 .city_body .city_hot .clearfix li{border: 1px solid #999;float: left;padding: 5px;background: #fff;}
 .city_body .city_list h2{padding-left: 15px;line-height: 30px;font-size: 14px;background: #f0f0f0;font-weight: normal;}
-.city_body .city_list ul li{margin-top: 15px;margin-left: 3%;}
+.city_body .city_list ul li{margin-top: 15px;margin-left: 3%;margin-bottom: 15px;}
 .city_body .city_index{width: 20px;display: flex;flex-direction: column;justify-content: center;text-align: center;border-left: 1px #e6e6e6 solid;}
 .city_body .city_index ul{position: fixed;top: calc(50% - 169px);}
 </style>

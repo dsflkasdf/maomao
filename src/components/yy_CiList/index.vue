@@ -1,34 +1,23 @@
 <template>
 	<div class="cinema_body">
-		<ul>
-			<!-- <li>
-				<div>
-					<span>大地影院（澳东世纪店）</span>
-					<span class="q"><span class="price">22.9</span>元起</span>
-				</div>
-				<div class="address">
-					<span>金州区大连经济技术开发区澳东世纪3层</span>
-					<span>1763.5km</span>
-				</div>
-				<div class="card">
-					<div>小吃</div>
-					<div>折扣卡</div>
-				</div>
-			</li> -->
-			<li v-for="(item,i) in list" :key="i">
-				<div>
-					<span class="shenlue">{{item.nm}}</span>
-					<span class="q"><span class="price">{{item.pq}}</span>元起</span>
-				</div>
-				<div class="address">
-					<span>{{item.dz}}</span>
-					<span>{{item.jl}}km</span>
-				</div>
-				<div class="card">
-					<div v-for="(zhi,key) in item.bq" v-if="zhi===1" :class="key|classgv" :key="key">{{ key | gv }}</div>
-				</div>
-			</li>
-		</ul>
+		<Loading v-if='isload'></Loading>
+		<Scroll v-else>
+			<ul>
+				<li v-for="(item,i) in list" :key="i">
+					<div>
+						<span class="shenlue">{{item.nm}}</span>
+						<span class="q"><span class="price">{{item.pq}}</span>元起</span>
+					</div>
+					<div class="address">
+						<span>{{item.dz}}</span>
+						<span>{{item.jl}}km</span>
+					</div>
+					<div class="card">
+						<div v-for="(zhi,key) in item.bq" v-if="zhi===1" :class="key|classgv" :key="key">{{ key | gv }}</div>
+					</div>
+				</li>
+			</ul>
+		</Scroll>
 	</div>
 </template>
 
@@ -37,14 +26,17 @@ export default{
 	name:'yy_Cilist',
 	data(){
 		return{
-			list:[]
+			list:[],
+			isload:true
 		}
 	},
 	mounted() {
 		this.axios.get('/data/yy.json')
 		.then((res)=>{
-			this.list=res.data.sj;
-			console.log(res.data.sj)
+			if(res.status===200){
+				this.list=res.data.sj;
+				this.isload=false;
+			}
 		})
 	},
 	filters:{
@@ -81,7 +73,7 @@ export default{
 </script>
 
 <style scoped>
-#content .cinema_body{flex: 1;overflow: auto;}
+#content .cinema_body{flex: 1;overflow: auto;height: 416px;}
 .cinema_body ul{padding: 20px;}
 .cinema_body li{border-bottom: 1px solid #E6E6E6;margin-bottom: 20px;}
 .cinema_body div{margin-bottom: 10px;}
