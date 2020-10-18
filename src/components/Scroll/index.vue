@@ -8,6 +8,11 @@
 import BScroll from 'better-scroll';
 export default{
 	name:'Scroll',
+	data(){
+		return{
+			jl:0,
+		}
+	},
 	mounted(){
 		this.$nextTick(()=>{
 			var scroll=new BScroll(this.$refs.wrapper,{
@@ -22,13 +27,12 @@ export default{
 		})
 	},
 	methods:{
-		xl(y){
-			this.scroll.scrollTo(0,y);
-		}
+		
 	}
 }
 </script>
 
 <style scoped>
-	.wrapper{height: 100%;}
+html,body{width: 100%;}
+.wrapper{height: 100%;}
 </style>

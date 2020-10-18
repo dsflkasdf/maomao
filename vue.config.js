@@ -1,0 +1,11 @@
+module.exports={
+	publicPath:'/maomao',
+	devServer:{
+		proxy:{
+			'/api':{
+				target:'http://117.82.185.129',
+				changeOrigin:true
+			}
+		}
+	}
+}

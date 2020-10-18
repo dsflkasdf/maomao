@@ -1,27 +1,27 @@
 <template>
-	<div class="movie_body">
+	<div class="movie_body" ref="movie_body">
 		<Loading v-if="isload"></Loading>
-		<Scroll v-else>
-			<ul>
-				<li v-for="(item,i) in list" :key='i'>
-					<div class="pic_show"><img :src="item.img" @touchstart='xq(item.id)' /></div>
-					<div class="info_list">
-						<h2>{{item.biaoti}}</h2>
-						<p><span class="person">{{item.pjrs}}</span> 人想看</p>
-						<p>{{item.leixing}}</p>
-						<p>{{item.yanyuan}}</p>
-						<p>2020-11-20上映</p>
-					</div>
-					<div class="btn_pre">
-						预售
-					</div>
-				</li>
-			</ul>
-		</Scroll>
+		<ul v-else>
+			<li class="jz"></li>
+			<li v-for="(item,i) in list" :key='i'>
+				<div class="pic_show"><img :src="item.img" @touchstart='xq(item.id)' /></div>
+				<div class="info_list">
+					<h2>{{item.biaoti}}</h2>
+					<p><span class="person">{{item.pjrs}}</span> 人想看</p>
+					<p>{{item.leixing}}</p>
+					<p>{{item.yanyuan}}</p>
+					<p>2020-11-20上映</p>
+				</div>
+				<div class="btn_pre">
+					预售
+				</div>
+			</li>
+		</ul>
 	</div>
 </template>
 
 <script>
+	import BScroll from 'better-scroll';
 	export default{
 		name:'ComingSoon',
 		data(){
@@ -54,6 +54,51 @@
 						that.list = music.data;
 						that.isload=false;
 						that.pid=id;
+						
+						that.$nextTick(()=>{
+							var scroll=new BScroll(that.$refs.movie_body,{
+								tap:true,
+								probeType:1,
+								scrollY: true
+							});
+							var hc=document.getElementsByClassName('jz')[0];
+							scroll.on('scroll',(zb)=>{
+								if(zb.y>20){
+									hc.innerHTML="<i class='iconfont icon-jiazai'></i>";
+									var i=document.getElementsByClassName('icon-jiazai')[0];
+									i.style.margin='auto';
+									i.style.textAlign='center';
+								}
+							});
+							scroll.on('touchEnd',(zb)=>{
+								if(zb.y>20){
+									that.axios({
+										url:'/data/dydata.json',
+										method: 'get',
+										data:{},
+										responseType: 'blob',
+										transformResponse: [function(data) {
+											var reader = new FileReader()
+											reader.readAsText(data, 'GBK')
+											reader.onload = function(e) {
+												var music = JSON.parse(reader.result)
+												that.list = music.data;
+												that.isload=false;
+												that.pid=id;
+												
+												hc.innerHTML='';
+											}
+										}],
+										headers: {
+										  'X-Requested-With': 'XMLHttpRequest',
+										  'Content-Type': 'application/x-www-form-urlencoded'
+										}
+									})
+								}
+							})
+							
+						})
+											
 					}
 				}],
 				headers: {
@@ -80,4 +125,5 @@
 					text-align: center;background-color: #f03d37;color:#fff;
 					border-radius: 4px;font-size: 12px;cursor: pointer;}
 .movie_body .btn_pre{background-color: #3c9fe6;}
+.movie_body .jz{margin: 0;padding: 0;border: none;}
 </style>

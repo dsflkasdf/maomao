@@ -4,12 +4,15 @@
     <meta charset="utf-8">
 	<meta name="referrer" content="no-referrer">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+    <meta name="viewport" content="width=device-width,height=device-height,initial-scale=1.0,user-scalable=no">
     <link rel="icon" href="<%= BASE_URL %>favicon.ico">
 	<link href="/iconfont.css" rel="stylesheet">
 	<style>
 		*{margin: 0;padding: 0;}
 		ul{list-style: none;}
+		html,body{height: 100%;}
+		#app{display: flex;height: 100%;}
+		#app div{margin: auto;}
 	</style>
     <title><%= htmlWebpackPlugin.options.title %></title>
   </head>
@@ -19,8 +22,8 @@
     </noscript>
 	
     <div id="app">
-			
-	</div>
+			<div>喵喵正在努力加载中……</div>
+		</div>
     <!-- built files will be auto injected -->
   </body>
 </html>
